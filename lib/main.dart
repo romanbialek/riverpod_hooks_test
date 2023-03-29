@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'dart:io';
 import 'dart:typed_data';
@@ -55,7 +56,7 @@ class ImagesGrid extends HookConsumerWidget {
                   final file =
                       await File('${directory.path}/$fileName').create();
                   file.writeAsBytesSync(imageData);
-                  downloadImage(file, fileName);
+                  _downloadImage(file, fileName);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -69,11 +70,20 @@ class ImagesGrid extends HookConsumerWidget {
     );
   }
 
-  Future<void> downloadImage(File file, String? name) async {
-    if (file != null && file.path != null) {
+  Future<void> _downloadImage(File file, String fileName) async {
       GallerySaver.saveImage(file.path).then((value) {
-        log("Downloaded");
+        _showToast(fileName);
       });
-    }
+  }
+
+  void _showToast(String fileName){
+    Fluttertoast.showToast(
+        msg: "$fileName downloaded successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white,
+        textColor: Colors.black54,
+        fontSize: 16.0
+    );
   }
 }
